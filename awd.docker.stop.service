@@ -1,12 +1,14 @@
 [Unit]
 Description=stop adw docker before reboot and shutdown
-Before=shutdown.target reboot.target halt.target
-Requires=docker.service
+DefaultDependencies=no
+#Before=systemd-poweroff.service systemd-reboot.service systemd-halt.service
+#Requires=docker.service
 
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/docker container stop test
+ExecStart=/usr/bin/touch /home/xm137/flag.txt
+RemainAfterExit=yes
 
 [Install]
-WantedBy=halt.target reboot.target shutdown.target
+WantedBy=halt.target reboot.target poweroff.target
