@@ -1,0 +1,12 @@
+[Unit]
+Description=stop adw docker before reboot and shutdown
+Before=shutdown.target reboot.target halt.target
+Requires=docker.service
+
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker container stop test
+
+[Install]
+WantedBy=halt.target reboot.target shutdown.target
