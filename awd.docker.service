@@ -1,0 +1,54 @@
+[Unit]
+Description=AWD Containers
+Documentation=https://xm137.org.cn
+After=docker.service
+Wants=network-online.target containerd.service
+Requires=docker.service
+
+
+[Service]
+Type=oneshot
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+# in next line container not must need,but for better know this how do 
+#ExecStartPre=/usr/bin/docker 
+ExecStart=/usr/bin/docker container start test
+#ExecStartPost=/usr/bin/docker
+ExecReload=/usr/bin/docker container stop test
+ExecStop=/usr/bin/docker container stop test
+RemainAfterExit=yes
+
+TimeoutStartSec=0
+RestartSec=2
+Restart=no
+
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+#StartLimitInterval=60s
+StartLimitInterval=2s
+
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNPROC=infinity
+LimitCORE=infinity
+
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+OOMScoreAdjust=-500
+
+[Install]
+WantedBy=multi-user.target
