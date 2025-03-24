@@ -12,11 +12,27 @@ Type=oneshot
 # exists and systemd currently does not support the cgroup feature set required
 # for containers run by docker
 # in next line container not must need,but for better know this how do 
-#ExecStartPre=/usr/bin/docker 
-ExecStart=/usr/bin/docker container start test
-#ExecStartPost=/usr/bin/docker
-ExecReload=/usr/bin/docker container stop test
-ExecStop=/usr/bin/docker container stop test
+ExecStartPre=/usr/bin/docker container start flag_server
+ExecStart=/usr/bin/docker container start check_server
+ExecStartPost=/usr/bin/docker container start team1
+ExecStartPost=/usr/bin/docker container start team2
+ExecStartPost=/usr/bin/docker container start team3
+ExecStartPost=/usr/bin/docker container start team4
+
+ExecReload=/usr/bin/docker container stop team4
+ExecReload=/usr/bin/docker container stop team3
+ExecReload=/usr/bin/docker container stop team2
+ExecReload=/usr/bin/docker container stop team1
+ExecReload=/usr/bin/docker container stop check_server
+ExecReload=/usr/bin/docker container stop flag_server
+
+ExecStop=/usr/bin/docker container stop team4
+ExecStop=/usr/bin/docker container stop team3
+ExecStop=/usr/bin/docker container stop team2
+ExecStop=/usr/bin/docker container stop team1
+ExecStop=/usr/bin/docker container stop check_server
+ExecStop=/usr/bin/docker container stop flag_server
+
 RemainAfterExit=yes
 
 TimeoutStartSec=0
